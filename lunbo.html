@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>轮播图</title>
+		<link href="site.css" rel="stylesheet" />
+		
+	</head>
+	<body>
+		<div class="wrap">
+			<div id="container">
+				<ul id="inner">
+					<li class="img-item"><a href="#"><img src="pic1.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic2.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic3.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic4.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic5.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic6.jpg"/></a></li>
+					<li class="img-item"><a href="#"><img src="pic1.jpg"/></a></li>
+				</ul>
+				<div>
+					<div class="arrow" id="left-arrow"><</div>
+					<div class="arrow" id="right-arrow">></div>
+				</div>
+				<ul id="circle">
+					<li class="current">1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>5</li>
+					<li>6</li>
+				</ul>
+			</div>	
+		</div>
+		<script type="text/javascript">
+		var container = document.getElementById('container');
+		var inner = document.getElementById('inner')
+		var left = document.getElementById('left-arrow');
+		var right = document.getElementById('right-arrow');
+		var circleList = document.getElementById('circle').getElementsByTagName('li');
+		var index = 0;
+		var moveOffset = container.offsetWidth;	
+		var timer;
+		//切换图片事件
+		function animate(){
+			clearCircle();//清除所有小圆点样式
+			inner.style.left = index*moveOffset*(-1) + 'px';
+			if(index == circleList.length){
+				//轮播到最后一张索引值与下标值相同，偏移量变为第一张，下标也变为第一张
+				inner.style.left = 0;
+				index = 0;
+				circleList[0].className = 'current';//设置小圆点样式
+			}else{
+				circleList[index].className = 'current';//设置小圆点样式
+			}			
+		}
+		//右箭头切换事件
+		right.onclick = function(){
+			index++;
+			if(index > circleList.length){
+				index = 0;				
+			}
+			animate();
+		}
+		//左箭头切换事件
+		left.onclick = function(){
+			index--;
+			if(index < 0){
+				//为了实现无缝链接，复制最后一张与第一张相同，下标变为倒数第二张的，偏移量变为最后一张的
+				index = circleList.length-1;
+				inner.style.left = (index+1) * moveOffset *(-1)+'px';
+			}
+			animate();
+		}
+		//自动轮播
+		function autoMove(){
+			timer = setInterval(function(){
+				right.onclick();
+			},2000);
+		}
+		//鼠标处于图片位置停止轮播
+		container.onmouseover = function(){
+			clearInterval(timer);
+		}
+		//鼠标移开开始轮播
+		container.onmouseout = autoMove;
+		//清除小圆点class状态
+		function clearCircle(){
+			for(var i=0; i< circleList.length; i++){
+				circleList[i].className = '';
+			}
+		}
+		//li标签数字与图片对应
+		for(var i=0; i< circleList.length; i++){			
+			circleList[i].onclick = function(){	
+				index = this.innerText-1;
+				animate();
+			}			
+		}
+		autoMove();
+		</script>
+	</body>	
+</html>
+
